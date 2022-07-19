@@ -25,6 +25,9 @@ Check `test_emd_loss.py` for example.
 
 The cuda code is originally written by Haoqiang Fan. The PyTorch wrapper is written by Kaichun Mo. Also, Jiayuan Gu provided helps.
 
+It is based on the implementation from this paper:
+Haoqiang Fan et al.: A Point Set Generation Network for 3D Object Reconstruction from a Single Image
+
 ## License
 
 MIT
