@@ -3,6 +3,7 @@
 ## Dependency
 
 The code has been tested on Ubuntu 16.04, PyTorch 1.1.0, CUDA 9.0.
+Update: should also be working with newer versions now.
 
 ## Usage
 
