@@ -1,5 +1,5 @@
 import torch
-import emd_cuda
+from . import emd_cuda
 
 
 class EarthMoverDistanceFunction(torch.autograd.Function):
@@ -21,26 +21,29 @@ class EarthMoverDistanceFunction(torch.autograd.Function):
         return grad_xyz1, grad_xyz2
 
 
-def earth_mover_distance(xyz1, xyz2, transpose=True):
-    """Earth Mover Distance (Approx)
-
-    Args:
-        xyz1 (torch.Tensor): (b, 3, n1)
-        xyz2 (torch.Tensor): (b, 3, n1)
-        transpose (bool): whether to transpose inputs as it might be BCN format.
-            Extensions only support BNC format.
-
-    Returns:
-        cost (torch.Tensor): (b)
-
+class EarthMoverDistance(torch.nn.Module):
     """
-    if xyz1.dim() == 2:
-        xyz1 = xyz1.unsqueeze(0)
-    if xyz2.dim() == 2:
-        xyz2 = xyz2.unsqueeze(0)
-    if transpose:
-        xyz1 = xyz1.transpose(1, 2)
-        xyz2 = xyz2.transpose(1, 2)
-    cost = EarthMoverDistanceFunction.apply(xyz1, xyz2)
-    return cost
+    Gives the approximate Earth Mover Distance
+    """
+    def forward(self, xyz1, xyz2, transpose=False):
+        """
+        Args:
+            xyz1 (torch.Tensor): (b, n1, 3)
+            xyz2 (torch.Tensor): (b, n1, 3)
+            transpose (bool): if true, will transpose inputs from BxCxN to BxNxC format
+                Extensions only support BNC format.
+
+        Returns:
+            cost (torch.Tensor): (b), average over (n1) points
+
+        """
+        if xyz1.dim() == 2:
+            xyz1 = xyz1.unsqueeze(0)
+        if xyz2.dim() == 2:
+            xyz2 = xyz2.unsqueeze(0)
+        if transpose:
+            xyz1 = xyz1.transpose(1, 2)
+            xyz2 = xyz2.transpose(1, 2)
+        cost = EarthMoverDistanceFunction.apply(xyz1, xyz2) / xyz1.shape[1]
+        return cost
 
