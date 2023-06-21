@@ -1,5 +1,6 @@
 import torch
-from . import emd_cuda
+# from . import emd_cuda
+import emd_cuda
 
 
 class EarthMoverDistanceFunction(torch.autograd.Function):
